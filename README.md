@@ -1,6 +1,6 @@
 # 4CRAZZ Coach Management
 
-A premium black-and-gold, responsive founder workspace for managing a career-coach network. Built with HTML, CSS, JavaScript, Vite, and Supabase Authentication.
+A responsive founder workspace for managing a career-coach network with a split theme: a luxury black-and-gold navigation rail and login, paired with a warm cream dashboard workspace accented in metallic gold. Built with HTML, CSS, JavaScript, Vite, and Supabase Authentication.
 
 ## Environment Setup
 
@@ -45,9 +45,11 @@ The production site is generated in `dist/`.
 
 ## Included Features
 
-- Coach directory with live search and availability filters
+- Split color theme: black-and-gold sidebar & login, cream light dashboard with gold accents
+- Coach directory with live search and status filters
+- Coach status badges: **new** and **video sent** (with matching dashboard filters and summary counts)
 - Create, edit, and delete coach profiles
-- Profile details, avatar URL or gold-tone preset, remote status, skills, availability, and social / portfolio links
-- Summary counts for coaches, availability, and distinct specialties
-- LocalStorage persistence with a sample directory on first load
+- Profile details, avatar URL or gold-tone preset, remote status, skills, coach status, and social / portfolio links
+- Summary counts for coaches, new coaches, videos sent, and distinct specialties
+- LocalStorage persistence with a sample directory on first load (legacy availability statuses migrate automatically)
 - Responsive desktop, tablet, and mobile layouts
