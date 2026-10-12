@@ -229,6 +229,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .coach-skills { display: flex; min-height: 22px; flex-wrap: wrap; gap: 5px; margin: 0 0 11px; }
 .skill-badge { display: inline-flex; align-items: center; min-height: 20px; padding: 0 7px; color: var(--gold-deeper); border: 1px solid var(--gold-line); border-radius: 4px; background: var(--gold-wash); font-size: 8px; font-weight: 500; }
 .skill-more { color: var(--gold-deep); border-color: var(--gold-line); background: transparent; }
+/* "Added by" team-member badge on coach cards */
+.added-by-badge { display: inline-flex; align-items: center; gap: 5px; min-height: 20px; padding: 0 8px; color: var(--gold-deeper); border: 1px solid var(--gold-line); border-radius: 20px; background: var(--gold-wash); font-size: 8px; font-weight: 600; letter-spacing: .2px; white-space: nowrap; }
+.added-by-badge svg { width: 11px; height: 11px; flex: 0 0 auto; color: var(--gold-deep); fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
 .coach-card-bottom { display: flex; align-items: center; justify-content: space-between; gap: 7px; margin-top: auto; padding-top: 9px; border-top: 1px solid var(--light-line); }
 .social-links { display: flex; align-items: center; gap: 3px; min-width: 0; }
 .social-link { display: grid; width: 25px; height: 25px; flex: 0 0 auto; padding: 5px; place-items: center; color: var(--gold-deep); border: 1px solid transparent; border-radius: 5px; transition: color .16s, border-color .16s, background .16s; }

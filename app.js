@@ -1,7 +1,13 @@
 import { signIn, signOut, initAuth } from './auth.js';
-
-const COACH_STORAGE_KEY = '4crazz-coach-network-v1';
-const LEGACY_COACH_STORAGE_KEY = 'northstar-coach-network-v1';
+import {
+  normalizeTeamMember,
+  fromCoachApiRecord,
+  createCoach,
+  updateCoach,
+  writeStoredCoaches,
+  COACH_STORAGE_KEY,
+  LEGACY_COACH_STORAGE_KEY,
+} from './coachApi.js';
 
   const avatarPalettes = {
     gold: { bg: 'linear-gradient(145deg, #e8c873 0%, #b28632 100%)', ink: '#241805' },
@@ -18,7 +24,7 @@ const LEGACY_COACH_STORAGE_KEY = 'northstar-coach-network-v1';
       bio: 'Helping thoughtful leaders build the confidence, clarity, and teams to do their best work.',
       avatarUrl: '', avatarColor: 'champagne', location: 'San Francisco, CA', remote: true,
       email: 'amara@4crazz.com', yearsExperience: 14,
-      skills: ['Executive coaching', 'Leadership', 'Team building', 'Founder transitions'], status: 'new',
+      skills: ['Executive coaching', 'Leadership', 'Team building', 'Founder transitions'], status: 'new', added_by: 'Dan',
       linkedin: 'https://www.linkedin.com/', twitter: 'https://x.com/', instagram: '', youtube: '', website: 'https://example.com/'
     },
     {
@@ -26,7 +32,7 @@ const LEGACY_COACH_STORAGE_KEY = 'northstar-coach-network-v1';
       bio: 'A steady thought partner for people navigating a big professional pivot or a new chapter.',
       avatarUrl: '', avatarColor: 'gold', location: 'New York, NY', remote: false,
       email: 'daniel@4crazz.com', yearsExperience: 11,
-      skills: ['Career pivots', 'Interview prep', 'Personal brand', 'Negotiation'], status: 'video-sent',
+      skills: ['Career pivots', 'Interview prep', 'Personal brand', 'Negotiation'], status: 'video-sent', added_by: 'Robi',
       linkedin: 'https://www.linkedin.com/', twitter: '', instagram: '', youtube: 'https://www.youtube.com/', website: ''
     },
     {
@@ -34,7 +40,7 @@ const LEGACY_COACH_STORAGE_KEY = 'northstar-coach-network-v1';
       bio: 'Turns early-stage growing pains into people-first systems that give founders room to scale.',
       avatarUrl: '', avatarColor: 'gold', location: '', remote: true,
       email: 'priya@4crazz.com', yearsExperience: 9,
-      skills: ['Startup operations', 'People strategy', 'Scaling teams', 'Org design'], status: 'new',
+      skills: ['Startup operations', 'People strategy', 'Scaling teams', 'Org design'], status: 'new', added_by: 'Menza',
       linkedin: 'https://www.linkedin.com/', twitter: 'https://x.com/', instagram: 'https://www.instagram.com/', youtube: '', website: 'https://example.com/'
     },
     {
@@ -42,7 +48,7 @@ const LEGACY_COACH_STORAGE_KEY = 'northstar-coach-network-v1';
       bio: 'Brings a designer’s curiosity to career planning, portfolio storytelling, and leadership growth.',
       avatarUrl: '', avatarColor: 'copper', location: 'Austin, TX', remote: true,
       email: 'james@4crazz.com', yearsExperience: 12,
-      skills: ['Product leadership', 'Design careers', 'Portfolio reviews', 'Creative direction'], status: 'video-sent',
+      skills: ['Product leadership', 'Design careers', 'Portfolio reviews', 'Creative direction'], status: 'video-sent', added_by: 'Obora',
       linkedin: 'https://www.linkedin.com/', twitter: '', instagram: 'https://www.instagram.com/', youtube: '', website: 'https://example.com/'
     },
     {
@@ -50,7 +56,7 @@ const LEGACY_COACH_STORAGE_KEY = 'northstar-coach-network-v1';
       bio: 'Supports ambitious leaders in finding a sustainable rhythm without losing sight of what matters.',
       avatarUrl: '', avatarColor: 'ivory', location: 'London, UK', remote: true,
       email: 'sofia@4crazz.com', yearsExperience: 16,
-      skills: ['Leadership wellbeing', 'Burnout prevention', 'Mindful leadership', 'Team coaching'], status: 'new',
+      skills: ['Leadership wellbeing', 'Burnout prevention', 'Mindful leadership', 'Team coaching'], status: 'new', added_by: 'Dan',
       linkedin: 'https://www.linkedin.com/', twitter: '', instagram: '', youtube: 'https://www.youtube.com/', website: ''
     },
     {
@@ -58,7 +64,7 @@ const LEGACY_COACH_STORAGE_KEY = 'northstar-coach-network-v1';
       bio: 'A former engineering leader helping technical teams grow with trust, focus, and clear communication.',
       avatarUrl: '', avatarColor: 'dark', location: '', remote: true,
       email: 'marcus@4crazz.com', yearsExperience: 18,
-      skills: ['Engineering leadership', 'Technical management', 'Communication', 'Org design'], status: 'video-sent',
+      skills: ['Engineering leadership', 'Technical management', 'Communication', 'Org design'], status: 'video-sent', added_by: 'Robi',
       linkedin: 'https://www.linkedin.com/', twitter: 'https://x.com/', instagram: '', youtube: '', website: 'https://example.com/'
     },
     {
@@ -66,7 +72,7 @@ const LEGACY_COACH_STORAGE_KEY = 'northstar-coach-network-v1';
       bio: 'Creates space to connect your strengths and values with work that feels meaningful and yours.',
       avatarUrl: '', avatarColor: 'champagne', location: 'Seattle, WA', remote: false,
       email: 'elise@4crazz.com', yearsExperience: 8,
-      skills: ['Career clarity', 'Values mapping', 'Leadership presence', 'Career pivots'], status: 'new',
+      skills: ['Career clarity', 'Values mapping', 'Leadership presence', 'Career pivots'], status: 'new', added_by: 'Menza',
       linkedin: 'https://www.linkedin.com/', twitter: '', instagram: 'https://www.instagram.com/', youtube: '', website: 'https://example.com/'
     },
     {
@@ -74,7 +80,7 @@ const LEGACY_COACH_STORAGE_KEY = 'northstar-coach-network-v1';
       bio: 'Helps founders and sales leaders find a clear story, build momentum, and lead with purpose.',
       avatarUrl: '', avatarColor: 'gold', location: 'Toronto, Canada', remote: true,
       email: 'theo@4crazz.com', yearsExperience: 13,
-      skills: ['Go-to-market', 'Sales leadership', 'Founder coaching', 'Storytelling'], status: 'video-sent',
+      skills: ['Go-to-market', 'Sales leadership', 'Founder coaching', 'Storytelling'], status: 'video-sent', added_by: 'Obora',
       linkedin: 'https://www.linkedin.com/', twitter: 'https://x.com/', instagram: '', youtube: 'https://www.youtube.com/', website: ''
     },
   ];
@@ -141,13 +147,13 @@ const LEGACY_COACH_STORAGE_KEY = 'northstar-coach-network-v1';
       const stored = current ?? localStorage.getItem(LEGACY_COACH_STORAGE_KEY);
       if (stored === null) {
         const initial = cloneSeedCoaches();
-        localStorage.setItem(COACH_STORAGE_KEY, JSON.stringify(initial));
+        writeStoredCoaches(initial);
         return initial;
       }
       const parsed = JSON.parse(stored);
       if (!Array.isArray(parsed)) throw new Error('Coach data should be a list.');
-      const normalized = parsed.map(normalizeCoach).filter((coach) => coach.id && coach.fullName);
-      if (current === null) localStorage.setItem(COACH_STORAGE_KEY, JSON.stringify(normalized));
+      const normalized = parsed.map((record) => normalizeCoach(fromCoachApiRecord(record))).filter((coach) => coach.id && coach.fullName);
+      if (current === null) writeStoredCoaches(normalized);
       return normalized;
     } catch (error) {
       console.warn('Could not read saved coach profiles; using the sample directory.', error);
@@ -180,12 +186,13 @@ const LEGACY_COACH_STORAGE_KEY = 'northstar-coach-network-v1';
       instagram: safeUrl(coach?.instagram),
       youtube: safeUrl(coach?.youtube),
       website: safeUrl(coach?.website),
+      added_by: normalizeTeamMember(coach?.added_by),
     };
   }
 
   function persistCoaches() {
     try {
-      localStorage.setItem(COACH_STORAGE_KEY, JSON.stringify(coaches));
+      writeStoredCoaches(coaches);
       return true;
     } catch (error) {
       console.warn('Could not save coach profiles to local storage.', error);
@@ -260,7 +267,7 @@ const LEGACY_COACH_STORAGE_KEY = 'northstar-coach-network-v1';
     return coaches.filter((coach) => {
       if (status !== 'all' && coach.status !== status) return false;
       if (!query) return true;
-      const searchable = [coach.fullName, coach.title, coach.location, coach.remote ? 'remote' : '', ...coach.skills].join(' ').toLocaleLowerCase();
+      const searchable = [coach.fullName, coach.title, coach.location, coach.remote ? 'remote' : '', coach.added_by, ...coach.skills].join(' ').toLocaleLowerCase();
       return searchable.includes(query);
     });
   }
@@ -294,6 +301,8 @@ const LEGACY_COACH_STORAGE_KEY = 'northstar-coach-network-v1';
       socialLinkMarkup(coach, 'website', 'Website'),
     ].join('');
     const bio = coach.bio.trim() || 'A trusted guide for the next step in a meaningful career.';
+    const addedBy = normalizeTeamMember(coach.added_by);
+    const addedByMarkup = addedBy ? `<span class="added-by-badge" title="Added by ${escapeHTML(addedBy)}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="8" r="3.25"/><path d="M3.5 20v-1.25a5.5 5.5 0 0 1 11 0V20m2-8.5a3 3 0 1 0 0-6m1 8.25a4.75 4.75 0 0 1 3 4.5v.75"/></svg><span>Added by: ${escapeHTML(addedBy)}</span></span>` : '';
 
     return `<article class="coach-card" data-id="${escapeHTML(coach.id)}">
       <div class="coach-card-top">
@@ -305,6 +314,7 @@ const LEGACY_COACH_STORAGE_KEY = 'northstar-coach-network-v1';
         <span class="coach-meta-item"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.25 10.15c0 5.15-7.25 10.1-7.25 10.1s-7.25-4.95-7.25-10.1a7.25 7.25 0 1 1 14.5 0Z"/><circle cx="12" cy="10" r="2.25"/></svg><span title="${escapeHTML(locationLabel(coach))}">${escapeHTML(locationLabel(coach))}</span></span>
         ${experience}
         <a class="coach-meta-item coach-email" href="mailto:${email}" title="Email ${email}"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.25" y="5.25" width="17.5" height="13.5" rx="2.5"/><path d="m4.5 7 7.5 5.5L19.5 7"/></svg><span>${email}</span></a>
+        ${addedByMarkup}
       </div>
       <p class="coach-bio">${escapeHTML(bio)}</p>
       <div class="coach-skills" aria-label="Specialties">${skillsMarkup || '<span class="skill-badge">Specialties not added</span>'}</div>
@@ -422,6 +432,7 @@ const LEGACY_COACH_STORAGE_KEY = 'northstar-coach-network-v1';
     $('#coach-remote').checked = Boolean(coach?.remote);
     $('#coach-experience').value = coach && Number.isFinite(coach.yearsExperience) ? coach.yearsExperience : '';
     $('#coach-status').value = coach && Object.hasOwn(statusDetails, coach.status) ? coach.status : 'new';
+    $('#coach-added-by').value = normalizeTeamMember(coach?.added_by);
     $('#coach-avatar-url').value = coach?.avatarUrl || '';
     $('#coach-linkedin').value = coach?.linkedin || '';
     $('#coach-twitter').value = coach?.twitter || '';
@@ -493,36 +504,52 @@ const LEGACY_COACH_STORAGE_KEY = 'northstar-coach-network-v1';
       skills: [...skillValues],
       status: Object.hasOwn(statusDetails, $('#coach-status').value) ? $('#coach-status').value : 'new',
       avatarColor: selectedAvatarColor,
+      added_by: normalizeTeamMember($('#coach-added-by').value),
       ...links,
     };
   }
 
-  function onCoachFormSubmit(event) {
+  async function onCoachFormSubmit(event) {
     event.preventDefault();
     clearCoachFormError();
     const nameInput = $('#coach-name');
     const titleInput = $('#coach-title');
     const emailInput = $('#coach-email');
+    const addedByInput = $('#coach-added-by');
     if (!nameInput.value.trim()) return showCoachFormError('Please add the coach’s full name.', nameInput);
     if (!titleInput.value.trim()) return showCoachFormError('Please add a job title or specialization.', titleInput);
     if (!emailInput.value.trim()) return showCoachFormError('Please add an email address.', emailInput);
     if (!emailInput.validity.valid) return showCoachFormError('Please enter a valid email address.', emailInput);
+    if (!normalizeTeamMember(addedByInput.value)) return showCoachFormError('Please select the team member who added this coach.', addedByInput);
 
     const updatedCoach = readCoachForm();
     if (!updatedCoach) return;
     const message = editingCoachId
       ? `${updatedCoach.fullName}’s profile has been updated.`
       : `${updatedCoach.fullName} has been added to your network.`;
-    if (editingCoachId) {
-      const index = coaches.findIndex((coach) => coach.id === editingCoachId);
-      if (index >= 0) coaches[index] = updatedCoach;
-    } else {
-      coaches.unshift(updatedCoach);
+
+    const submitButton = coachForm.querySelector('.save-coach-button');
+    if (submitButton) submitButton.disabled = true;
+    try {
+      // POST /api/coaches when creating, PUT /api/coaches/:id when editing.
+      // Both routes persist and return the `added_by` property.
+      const savedCoach = editingCoachId ? await updateCoach(updatedCoach) : await createCoach(updatedCoach);
+      if (editingCoachId) {
+        const index = coaches.findIndex((coach) => coach.id === editingCoachId);
+        if (index >= 0) coaches[index] = savedCoach;
+      } else {
+        coaches.unshift(savedCoach);
+      }
+      const saved = persistCoaches();
+      renderDashboard();
+      closeCoachModal();
+      if (saved) showToast(message);
+    } catch (error) {
+      console.warn('Could not save coach profile.', error);
+      showCoachFormError('Could not save this coach right now. Please try again.');
+    } finally {
+      if (submitButton) submitButton.disabled = false;
     }
-    const saved = persistCoaches();
-    renderDashboard();
-    closeCoachModal();
-    if (saved) showToast(message);
   }
 
   function openDeleteModal(coach, returnFocus) {

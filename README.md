@@ -43,12 +43,27 @@ The production site is generated in `dist/`.
 - **Sign Out Flow**: Both desktop sidebar and mobile header provide clean sign-out actions.
 - **Error Feedback**: Immediate, styled error feedback for invalid credentials or configuration issues.
 
+## Coach data & API payload
+
+Every coach record carries an `added_by` field — the team member who added the coach (`Dan`, `Robi`, `Menza`, or `Obora`). It is required in the add / edit modal and rendered as an "Added by: …" badge on each coach card.
+
+`coachApi.js` is the data layer. It maps internal coach state to the snake_case database / REST schema (`toCoachApiPayload` / `fromCoachApiRecord`) and implements:
+
+| Action | Endpoint | Payload |
+| --- | --- | --- |
+| Create | `POST /api/coaches` | `toCoachApiPayload(coach)` incl. `added_by` |
+| Update | `PUT /api/coaches/:id` | `toCoachApiPayload(coach)` incl. `added_by` |
+| Fetch | `GET /api/coaches` | rows incl. `added_by` |
+
+Set `VITE_API_BASE_URL` to sync with a real backend. Without it, a localStorage adapter implements the identical contract so the standalone app keeps working — saves and fetches round-trip `added_by` either way.
+
 ## Included Features
 
 - Split color theme: black-and-gold sidebar & login, cream light dashboard with gold accents
 - Coach directory with live search and status filters
 - Coach status badges: **new** and **video sent** (with matching dashboard filters and summary counts)
 - Create, edit, and delete coach profiles
+- **"Added By" team-member tracking** — required dropdown (Dan, Robi, Menza, Obora) in the add / edit coach modal, stored as `added_by`, and shown as an "Added by: …" badge on every coach card
 - Profile details, avatar URL or gold-tone preset, remote status, skills, coach status, and social / portfolio links
 - Summary counts for coaches, new coaches, videos sent, and distinct specialties
 - LocalStorage persistence with a sample directory on first load (legacy availability statuses migrate automatically)
