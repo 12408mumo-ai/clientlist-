@@ -1,82 +1,84 @@
 (() => {
   'use strict';
 
-  const COACH_STORAGE_KEY = 'northstar-coach-network-v1';
-  const SESSION_STORAGE_KEY = 'northstar-founder-session';
-  const DEMO_EMAIL = 'founder@northstar.io';
+  const COACH_STORAGE_KEY = '4crazz-coach-network-v1';
+  const LEGACY_COACH_STORAGE_KEY = 'northstar-coach-network-v1';
+  const SESSION_STORAGE_KEY = '4crazz-founder-session';
+  const LEGACY_SESSION_STORAGE_KEY = 'northstar-founder-session';
+  const DEMO_EMAIL = 'founder@4crazz.com';
   const DEMO_PASSWORD = 'founder123';
 
   const avatarPalettes = {
-    ocean: { bg: 'linear-gradient(145deg, #d6e1ff 0%, #a8beef 100%)', ink: '#3d5885' },
-    lavender: { bg: 'linear-gradient(145deg, #eee3ff 0%, #c7adea 100%)', ink: '#684e8d' },
-    peach: { bg: 'linear-gradient(145deg, #ffe5d5 0%, #edb599 100%)', ink: '#885745' },
-    sage: { bg: 'linear-gradient(145deg, #dff0e2 0%, #a9d2b1 100%)', ink: '#43694c' },
-    rose: { bg: 'linear-gradient(145deg, #ffe1e7 0%, #e9aabc 100%)', ink: '#8d5364' },
-    slate: { bg: 'linear-gradient(145deg, #e0e6ef 0%, #aab6c8 100%)', ink: '#4c5c72' },
+    gold: { bg: 'linear-gradient(145deg, #e8c873 0%, #b28632 100%)', ink: '#241805' },
+    bronze: { bg: 'linear-gradient(145deg, #c99a4c 0%, #815a24 100%)', ink: '#1d1306' },
+    champagne: { bg: 'linear-gradient(145deg, #f0dca3 0%, #c6a35a 100%)', ink: '#38280d' },
+    copper: { bg: 'linear-gradient(145deg, #d0a15d 0%, #895b2d 100%)', ink: '#261809' },
+    dark: { bg: 'linear-gradient(145deg, #201a0e 0%, #080706 100%)', ink: '#e5bc63' },
+    ivory: { bg: 'linear-gradient(145deg, #f0e1bc 0%, #b48f49 100%)', ink: '#30230d' },
   };
 
   const seedCoaches = [
     {
       id: 'coach-amara-okafor', fullName: 'Amara Okafor', title: 'Executive & Leadership Coach',
       bio: 'Helping thoughtful leaders build the confidence, clarity, and teams to do their best work.',
-      avatarUrl: '', avatarColor: 'peach', location: 'San Francisco, CA', remote: true,
-      email: 'amara@northstar.co', yearsExperience: 14,
+      avatarUrl: '', avatarColor: 'champagne', location: 'San Francisco, CA', remote: true,
+      email: 'amara@4crazz.com', yearsExperience: 14,
       skills: ['Executive coaching', 'Leadership', 'Team building', 'Founder transitions'], status: 'accepting',
       linkedin: 'https://www.linkedin.com/', twitter: 'https://x.com/', instagram: '', youtube: '', website: 'https://example.com/'
     },
     {
       id: 'coach-daniel-kim', fullName: 'Daniel Kim', title: 'Career Transition Coach',
       bio: 'A steady thought partner for people navigating a big professional pivot or a new chapter.',
-      avatarUrl: '', avatarColor: 'ocean', location: 'New York, NY', remote: false,
-      email: 'daniel@northstar.co', yearsExperience: 11,
+      avatarUrl: '', avatarColor: 'gold', location: 'New York, NY', remote: false,
+      email: 'daniel@4crazz.com', yearsExperience: 11,
       skills: ['Career pivots', 'Interview prep', 'Personal brand', 'Negotiation'], status: 'booked',
       linkedin: 'https://www.linkedin.com/', twitter: '', instagram: '', youtube: 'https://www.youtube.com/', website: ''
     },
     {
       id: 'coach-priya-nair', fullName: 'Priya Nair', title: 'Startup Operations Advisor',
       bio: 'Turns early-stage growing pains into people-first systems that give founders room to scale.',
-      avatarUrl: '', avatarColor: 'lavender', location: '', remote: true,
-      email: 'priya@northstar.co', yearsExperience: 9,
+      avatarUrl: '', avatarColor: 'gold', location: '', remote: true,
+      email: 'priya@4crazz.com', yearsExperience: 9,
       skills: ['Startup operations', 'People strategy', 'Scaling teams', 'Org design'], status: 'accepting',
       linkedin: 'https://www.linkedin.com/', twitter: 'https://x.com/', instagram: 'https://www.instagram.com/', youtube: '', website: 'https://example.com/'
     },
     {
       id: 'coach-james-rivera', fullName: 'James Rivera', title: 'Product & Design Career Coach',
       bio: 'Brings a designer’s curiosity to career planning, portfolio storytelling, and leadership growth.',
-      avatarUrl: '', avatarColor: 'sage', location: 'Austin, TX', remote: true,
-      email: 'james@northstar.co', yearsExperience: 12,
+      avatarUrl: '', avatarColor: 'copper', location: 'Austin, TX', remote: true,
+      email: 'james@4crazz.com', yearsExperience: 12,
       skills: ['Product leadership', 'Design careers', 'Portfolio reviews', 'Creative direction'], status: 'leave',
       linkedin: 'https://www.linkedin.com/', twitter: '', instagram: 'https://www.instagram.com/', youtube: '', website: 'https://example.com/'
     },
     {
       id: 'coach-sofia-laurent', fullName: 'Sofia Laurent', title: 'Leadership & Wellbeing Coach',
       bio: 'Supports ambitious leaders in finding a sustainable rhythm without losing sight of what matters.',
-      avatarUrl: '', avatarColor: 'rose', location: 'London, UK', remote: true,
-      email: 'sofia@northstar.co', yearsExperience: 16,
+      avatarUrl: '', avatarColor: 'ivory', location: 'London, UK', remote: true,
+      email: 'sofia@4crazz.com', yearsExperience: 16,
       skills: ['Leadership wellbeing', 'Burnout prevention', 'Mindful leadership', 'Team coaching'], status: 'accepting',
       linkedin: 'https://www.linkedin.com/', twitter: '', instagram: '', youtube: 'https://www.youtube.com/', website: ''
     },
     {
       id: 'coach-marcus-johnson', fullName: 'Marcus Johnson', title: 'Engineering Leadership Coach',
       bio: 'A former engineering leader helping technical teams grow with trust, focus, and clear communication.',
-      avatarUrl: '', avatarColor: 'slate', location: '', remote: true,
-      email: 'marcus@northstar.co', yearsExperience: 18,
+      avatarUrl: '', avatarColor: 'dark', location: '', remote: true,
+      email: 'marcus@4crazz.com', yearsExperience: 18,
       skills: ['Engineering leadership', 'Technical management', 'Communication', 'Org design'], status: 'booked',
       linkedin: 'https://www.linkedin.com/', twitter: 'https://x.com/', instagram: '', youtube: '', website: 'https://example.com/'
     },
     {
       id: 'coach-elise-chen', fullName: 'Elise Chen', title: 'Career Clarity Coach',
       bio: 'Creates space to connect your strengths and values with work that feels meaningful and yours.',
-      avatarUrl: '', avatarColor: 'peach', location: 'Seattle, WA', remote: false,
-      email: 'elise@northstar.co', yearsExperience: 8,
+      avatarUrl: '', avatarColor: 'champagne', location: 'Seattle, WA', remote: false,
+      email: 'elise@4crazz.com', yearsExperience: 8,
       skills: ['Career clarity', 'Values mapping', 'Leadership presence', 'Career pivots'], status: 'accepting',
       linkedin: 'https://www.linkedin.com/', twitter: '', instagram: 'https://www.instagram.com/', youtube: '', website: 'https://example.com/'
     },
     {
       id: 'coach-theo-martin', fullName: 'Theo Martin', title: 'Go-to-Market & Sales Coach',
       bio: 'Helps founders and sales leaders find a clear story, build momentum, and lead with purpose.',
-      avatarUrl: '', avatarColor: 'ocean', location: 'Toronto, Canada', remote: true,
-      email: 'theo@northstar.co', yearsExperience: 13,
+      avatarUrl: '', avatarColor: 'gold', location: 'Toronto, Canada', remote: true,
+      email: 'theo@4crazz.com', yearsExperience: 13,
       skills: ['Go-to-market', 'Sales leadership', 'Founder coaching', 'Storytelling'], status: 'accepting',
       linkedin: 'https://www.linkedin.com/', twitter: 'https://x.com/', instagram: '', youtube: 'https://www.youtube.com/', website: ''
     },
@@ -118,7 +120,7 @@
 
   let coaches = loadCoaches();
   let editingCoachId = null;
-  let selectedAvatarColor = 'ocean';
+  let selectedAvatarColor = 'gold';
   let skillValues = [];
   let pendingDeleteId = null;
   let modalReturnFocus = null;
@@ -132,7 +134,8 @@
 
   function loadCoaches() {
     try {
-      const stored = localStorage.getItem(COACH_STORAGE_KEY);
+      const current = localStorage.getItem(COACH_STORAGE_KEY);
+      const stored = current ?? localStorage.getItem(LEGACY_COACH_STORAGE_KEY);
       if (stored === null) {
         const initial = cloneSeedCoaches();
         localStorage.setItem(COACH_STORAGE_KEY, JSON.stringify(initial));
@@ -140,7 +143,9 @@
       }
       const parsed = JSON.parse(stored);
       if (!Array.isArray(parsed)) throw new Error('Coach data should be a list.');
-      return parsed.map(normalizeCoach).filter((coach) => coach.id && coach.fullName);
+      const normalized = parsed.map(normalizeCoach).filter((coach) => coach.id && coach.fullName);
+      if (current === null) localStorage.setItem(COACH_STORAGE_KEY, JSON.stringify(normalized));
+      return normalized;
     } catch (error) {
       console.warn('Could not read saved coach profiles; using the sample directory.', error);
       return cloneSeedCoaches();
@@ -157,7 +162,7 @@
       title: typeof coach?.title === 'string' ? coach.title : '',
       bio: typeof coach?.bio === 'string' ? coach.bio : '',
       avatarUrl: safeUrl(coach?.avatarUrl),
-      avatarColor: Object.hasOwn(avatarPalettes, coach?.avatarColor) ? coach.avatarColor : 'ocean',
+      avatarColor: Object.hasOwn(avatarPalettes, coach?.avatarColor) ? coach.avatarColor : 'gold',
       location: typeof coach?.location === 'string' ? coach.location : '',
       remote: Boolean(coach?.remote),
       email: typeof coach?.email === 'string' ? coach.email : '',
@@ -209,7 +214,7 @@
   }
 
   function paletteFor(color) {
-    return avatarPalettes[color] || avatarPalettes.ocean;
+    return avatarPalettes[color] || avatarPalettes.gold;
   }
 
   function avatarMarkup(coach, extraClass = '') {
@@ -397,9 +402,9 @@
     clearCoachFormError();
     skillValues = coach ? [...coach.skills] : [];
     populateSkillChips();
-    selectedAvatarColor = coach ? (Object.hasOwn(avatarPalettes, coach.avatarColor) ? coach.avatarColor : 'ocean') : 'ocean';
+    selectedAvatarColor = coach ? (Object.hasOwn(avatarPalettes, coach.avatarColor) ? coach.avatarColor : 'gold') : 'gold';
 
-    $('#modal-eyebrow').textContent = coach ? 'UPDATE YOUR NETWORK' : 'YOUR NETWORK';
+    $('#modal-eyebrow').textContent = coach ? 'UPDATE 4CRAZZ PROFILE' : '4CRAZZ NETWORK';
     $('#modal-title').textContent = coach ? 'Edit career coach' : 'Add a career coach';
     $('#modal-description').textContent = coach ? 'Keep their details current for a thoughtful introduction.' : 'Capture the details that make a great introduction.';
     $('#save-button-label').textContent = coach ? 'Save changes' : 'Save coach';
@@ -568,8 +573,13 @@
 
   function setAuthenticated(isAuthenticated) {
     try {
-      if (isAuthenticated) localStorage.setItem(SESSION_STORAGE_KEY, 'true');
-      else localStorage.removeItem(SESSION_STORAGE_KEY);
+      if (isAuthenticated) {
+        localStorage.setItem(SESSION_STORAGE_KEY, 'true');
+        localStorage.removeItem(LEGACY_SESSION_STORAGE_KEY);
+      } else {
+        localStorage.removeItem(SESSION_STORAGE_KEY);
+        localStorage.removeItem(LEGACY_SESSION_STORAGE_KEY);
+      }
     } catch (error) {
       console.warn('Could not save the demo session.', error);
     }
@@ -598,7 +608,7 @@
       setAuthenticated(true);
       return true;
     }
-    loginError.textContent = 'That demo login doesn’t match. Use founder@northstar.io and founder123.';
+    loginError.textContent = 'That demo login doesn’t match. Use founder@4crazz.com and founder123.';
     loginError.hidden = false;
     loginPassword.focus();
     return false;
@@ -608,8 +618,8 @@
     const now = new Date();
     const weekday = new Intl.DateTimeFormat('en-US', { weekday: 'long' }).format(now).toUpperCase();
     const monthDay = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric' }).format(now).toUpperCase();
-    const eyebrow = $('.welcome-section .eyebrow');
-    if (eyebrow) eyebrow.innerHTML = `${weekday}, <span id="today-date">${escapeHTML(monthDay)}</span>`;
+    const dateLabel = $('#today-date');
+    if (dateLabel) dateLabel.textContent = `${weekday} · ${monthDay}`;
   }
 
   function handleModalKeydown(event, modal, closeHandler) {
@@ -740,8 +750,9 @@
 
   updateTodayDate();
   const alreadyAuthenticated = (() => {
-    try { return localStorage.getItem(SESSION_STORAGE_KEY) === 'true'; }
-    catch (_error) { return false; }
+    try {
+      return localStorage.getItem(SESSION_STORAGE_KEY) === 'true' || localStorage.getItem(LEGACY_SESSION_STORAGE_KEY) === 'true';
+    } catch (_error) { return false; }
   })();
   setAuthenticated(alreadyAuthenticated);
 })();
