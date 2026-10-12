@@ -1,12 +1,7 @@
-(() => {
-  'use strict';
+import { signIn, signOut, initAuth } from './auth.js';
 
-  const COACH_STORAGE_KEY = '4crazz-coach-network-v1';
-  const LEGACY_COACH_STORAGE_KEY = 'northstar-coach-network-v1';
-  const SESSION_STORAGE_KEY = '4crazz-founder-session';
-  const LEGACY_SESSION_STORAGE_KEY = 'northstar-founder-session';
-  const DEMO_EMAIL = 'founder@4crazz.com';
-  const DEMO_PASSWORD = 'founder123';
+const COACH_STORAGE_KEY = '4crazz-coach-network-v1';
+const LEGACY_COACH_STORAGE_KEY = 'northstar-coach-network-v1';
 
   const avatarPalettes = {
     gold: { bg: 'linear-gradient(145deg, #e8c873 0%, #b28632 100%)', ink: '#241805' },
@@ -571,47 +566,108 @@
     toastTimer = window.setTimeout(() => toast.remove(), 3600);
   }
 
-  function setAuthenticated(isAuthenticated) {
-    try {
-      if (isAuthenticated) {
-        localStorage.setItem(SESSION_STORAGE_KEY, 'true');
-        localStorage.removeItem(LEGACY_SESSION_STORAGE_KEY);
-      } else {
-        localStorage.removeItem(SESSION_STORAGE_KEY);
-        localStorage.removeItem(LEGACY_SESSION_STORAGE_KEY);
+  function updateUserProfile(user) {
+    if (!user) return;
+    const profileCopy = $('.founder-copy');
+    const avatar = $('.founder-avatar');
+    if (!profileCopy) return;
+
+    const email = user.email || '';
+    const metaName = user.user_metadata?.full_name || user.user_metadata?.name;
+    const displayName = metaName || (email ? email.split('@')[0] : 'Founder');
+
+    const strongEl = profileCopy.querySelector('strong');
+    const smallEl = profileCopy.querySelector('small');
+    if (strongEl) strongEl.textContent = displayName;
+    if (smallEl) smallEl.textContent = email ? `${email}` : 'Founder · Admin';
+
+    if (avatar) {
+      if (metaName) {
+        const parts = metaName.trim().split(/\s+/);
+        avatar.textContent = parts.length > 1
+          ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+          : metaName.slice(0, 2).toUpperCase();
+      } else if (email) {
+        avatar.textContent = email.slice(0, 2).toUpperCase();
       }
-    } catch (error) {
-      console.warn('Could not save the demo session.', error);
     }
+  }
+
+  function setAuthenticated(isAuthenticated, session = null) {
     loginView.hidden = isAuthenticated;
     appShell.hidden = !isAuthenticated;
+
     if (isAuthenticated) {
       loginError.hidden = true;
+      loginPassword.value = '';
+      if (session?.user) {
+        updateUserProfile(session.user);
+      }
       renderDashboard();
       updateTodayDate();
       window.setTimeout(() => window.scrollTo({ top: 0, behavior: 'instant' }), 0);
     } else {
       loginForm.reset();
-      loginEmail.value = DEMO_EMAIL;
-      loginPassword.value = DEMO_PASSWORD;
       loginPassword.type = 'password';
-      $('#toggle-password').setAttribute('aria-label', 'Show password');
-      loginError.hidden = true;
+      const toggleBtn = $('#toggle-password');
+      if (toggleBtn) toggleBtn.setAttribute('aria-label', 'Show password');
     }
   }
 
-  function tryDemoLogin() {
-    const email = loginEmail.value.trim().toLocaleLowerCase();
+  async function handleLogin(event) {
+    event.preventDefault();
+    const email = loginEmail.value.trim();
     const password = loginPassword.value;
-    if (email === DEMO_EMAIL && password === DEMO_PASSWORD) {
-      loginError.hidden = true;
-      setAuthenticated(true);
-      return true;
+
+    if (!email || !password) {
+      loginError.textContent = 'Please enter both your email address and password.';
+      loginError.hidden = false;
+      return;
     }
-    loginError.textContent = 'That demo login doesn’t match. Use founder@4crazz.com and founder123.';
-    loginError.hidden = false;
-    loginPassword.focus();
-    return false;
+
+    const submitBtn = loginForm.querySelector('button[type="submit"]');
+    const submitText = submitBtn?.querySelector('span');
+    const originalText = submitText ? submitText.textContent : 'Log in';
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      if (submitText) submitText.textContent = 'Signing in...';
+    }
+    loginError.hidden = true;
+
+    try {
+      const { data, error } = await signIn({ email, password });
+      if (error) {
+        loginError.textContent = error.message || 'Invalid login credentials.';
+        loginError.hidden = false;
+        loginPassword.focus();
+      } else if (data?.session) {
+        loginError.hidden = true;
+        setAuthenticated(true, data.session);
+        showToast('Welcome back to 4CRAZZ.');
+      } else if (data?.user && !data?.session) {
+        loginError.textContent = 'Please verify your email address before logging in.';
+        loginError.hidden = false;
+      }
+    } catch (err) {
+      loginError.textContent = err.message || 'Authentication failed. Please check your credentials and try again.';
+      loginError.hidden = false;
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        if (submitText) submitText.textContent = originalText;
+      }
+    }
+  }
+
+  async function handleLogout() {
+    try {
+      await signOut();
+    } catch (err) {
+      console.warn('Sign out error:', err);
+    }
+    setAuthenticated(false);
+    showToast('Signed out of 4CRAZZ.');
   }
 
   function updateTodayDate() {
@@ -646,24 +702,19 @@
     return false;
   }
 
-  // Founder sign-in (the credentials are intentionally demo-only; there is no backend).
-  loginForm.addEventListener('submit', (event) => {
-    event.preventDefault();
-    tryDemoLogin();
-  });
-  $('#demo-login').addEventListener('click', () => {
-    loginEmail.value = DEMO_EMAIL;
-    loginPassword.value = DEMO_PASSWORD;
-    tryDemoLogin();
-  });
+  // Supabase authentication event listeners
+  loginForm.addEventListener('submit', handleLogin);
+  loginEmail.addEventListener('input', () => { loginError.hidden = true; });
+  loginPassword.addEventListener('input', () => { loginError.hidden = true; });
+
   $('#toggle-password').addEventListener('click', (event) => {
     const button = event.currentTarget;
     const show = loginPassword.type === 'password';
     loginPassword.type = show ? 'text' : 'password';
     button.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
   });
-  $('#logout-button').addEventListener('click', () => setAuthenticated(false));
-  $('#mobile-logout').addEventListener('click', () => setAuthenticated(false));
+  $('#logout-button')?.addEventListener('click', handleLogout);
+  $('#mobile-logout')?.addEventListener('click', handleLogout);
 
   // Directory controls.
   searchInput.addEventListener('input', renderCoaches);
@@ -749,10 +800,13 @@
   });
 
   updateTodayDate();
-  const alreadyAuthenticated = (() => {
-    try {
-      return localStorage.getItem(SESSION_STORAGE_KEY) === 'true' || localStorage.getItem(LEGACY_SESSION_STORAGE_KEY) === 'true';
-    } catch (_error) { return false; }
-  })();
-  setAuthenticated(alreadyAuthenticated);
-})();
+
+  // Listen to Supabase auth state and restore active sessions
+  initAuth({
+    onAuthenticated: (session) => {
+      setAuthenticated(true, session);
+    },
+    onUnauthenticated: () => {
+      setAuthenticated(false);
+    },
+  });
