@@ -55,7 +55,23 @@ Every coach record carries an `added_by` field — the team member who added the
 | Update | `PUT /api/coaches/:id` | `toCoachApiPayload(coach)` incl. `added_by` |
 | Fetch | `GET /api/coaches` | rows incl. `added_by` |
 
-Set `VITE_API_BASE_URL` to sync with a real backend. Without it, a localStorage adapter implements the identical contract so the standalone app keeps working — saves and fetches round-trip `added_by` either way.
+Backends are used in this order — **first available wins**:
+
+1. **REST API** — set `VITE_API_BASE_URL`.
+2. **Supabase `career_coaches` table** — set `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` (already required for auth). This is the **cross-device sync** path: every laptop/phone reads and writes the same rows, so coaches (and their `added_by`) added on one device appear on all others. The app syncs on sign-in and whenever the window regains focus; device-local records missing from the shared table are pushed up automatically; deletes propagate too.
+3. **localStorage adapter** — offline fallback with the identical contract.
+
+### Supabase migration (run once)
+
+Create the shared table and the `added_by` column by running the idempotent script in the Supabase SQL editor:
+
+`supabase/migrations/20261012000000_career_coaches_added_by.sql`
+
+```sql
+ALTER TABLE career_coaches ADD COLUMN IF NOT EXISTS added_by TEXT;
+```
+
+The script also creates the `career_coaches` table if missing, backfills `added_by`, and enables Row Level Security policies for signed-in team members. Until it is run, the app keeps working per-device (local fallback) and logs a warning.
 
 ## Included Features
 

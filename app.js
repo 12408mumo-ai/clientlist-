@@ -1,9 +1,13 @@
 import { signIn, signOut, initAuth } from './auth.js';
+import { isSupabaseConfigured } from './supabaseClient.js';
 import {
   normalizeTeamMember,
   fromCoachApiRecord,
   createCoach,
   updateCoach,
+  deleteCoach,
+  fetchCoaches,
+  coachesMissingFromRemote,
   writeStoredCoaches,
   COACH_STORAGE_KEY,
   LEGACY_COACH_STORAGE_KEY,
@@ -571,10 +575,12 @@ import {
     if (deleteReturnFocus && typeof deleteReturnFocus.focus === 'function') deleteReturnFocus.focus();
   }
 
-  function removePendingCoach() {
+  async function removePendingCoach() {
     const coach = coaches.find((item) => item.id === pendingDeleteId);
     if (!coach) return closeDeleteModal();
     coaches = coaches.filter((item) => item.id !== pendingDeleteId);
+    // Propagate the delete so the coach is not resurrected by the next sync.
+    await deleteCoach(coach.id);
     const saved = persistCoaches();
     renderDashboard();
     const name = coach.fullName;
@@ -631,6 +637,43 @@ import {
     }
   }
 
+  // Cross-device sync with the shared Supabase `career_coaches` table.
+  let syncInProgress = false;
+  let syncTimer = null;
+
+  async function syncCoachesFromApi() {
+    if (syncInProgress || !isSupabaseConfigured || appShell.hidden) return;
+    syncInProgress = true;
+    try {
+      const remoteCoaches = await fetchCoaches();
+      const missing = coachesMissingFromRemote(remoteCoaches, coaches);
+      const pushed = [];
+      for (const coach of missing) {
+        try {
+          pushed.push(await createCoach(coach));
+        } catch (error) {
+          console.warn('Could not push a device-local coach to the shared table.', coach.id, error);
+          pushed.push(coach); // keep it visible locally even if the push failed
+        }
+      }
+      // Shared table wins for records that exist on both sides; device-only
+      // coaches are appended after being pushed up.
+      coaches = [...remoteCoaches, ...pushed].map(normalizeCoach);
+      persistCoaches();
+      renderDashboard();
+    } catch (error) {
+      console.warn('Coach sync failed; keeping device-local data.', error);
+    } finally {
+      syncInProgress = false;
+    }
+  }
+
+  function scheduleCoachesSync() {
+    if (!isSupabaseConfigured || appShell.hidden) return;
+    window.clearTimeout(syncTimer);
+    syncTimer = window.setTimeout(syncCoachesFromApi, 400);
+  }
+
   function setAuthenticated(isAuthenticated, session = null) {
     loginView.hidden = isAuthenticated;
     appShell.hidden = !isAuthenticated;
@@ -644,6 +687,7 @@ import {
       }
       renderDashboard();
       updateTodayDate();
+      syncCoachesFromApi();
       window.setTimeout(() => window.scrollTo({ top: 0, behavior: 'instant' }), 0);
     } else {
       loginForm.reset();
@@ -848,4 +892,11 @@ import {
     onUnauthenticated: () => {
       setAuthenticated(false);
     },
+  });
+
+  // Re-sync whenever the workspace is re-opened or re-focused so laptop and
+  // phone converge without a reload.
+  window.addEventListener('focus', scheduleCoachesSync);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') scheduleCoachesSync();
   });

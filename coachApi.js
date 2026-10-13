@@ -4,20 +4,25 @@
  * Database / REST schema (snake_case) always includes `added_by`: the team
  * member who added the coach. Allowed values are listed in TEAM_MEMBERS.
  *
- * Endpoints implemented by a real backend:
- *   POST /api/coaches        create a coach        body: toCoachApiPayload(coach)
- *   PUT  /api/coaches/:id    update a coach        body: toCoachApiPayload(coach)
- *   GET  /api/coaches        list coaches          rows: schema incl. added_by
+ * Backends (first available wins):
+ *   1. REST API     — VITE_API_BASE_URL set:
+ *                      POST /api/coaches, PUT /api/coaches/:id, GET /api/coaches
+ *   2. Supabase     — VITE_SUPABASE_URL/ANON_KEY set: shared `career_coaches`
+ *                      table (see supabase/migrations/) so every device reads
+ *                      and writes the same records — cross-device sync
+ *   3. localStorage — offline fallback with the identical contract
  *
- * Set VITE_API_BASE_URL to point the app at that backend. Without it, a
- * localStorage adapter implements the exact same contract (create / update /
- * fetch all round-trip `added_by`) so the standalone app keeps working.
+ * The `career_coaches` migration (incl. `added_by TEXT`) lives in
+ * supabase/migrations/20261012000000_career_coaches_added_by.sql.
  */
+
+import { supabase, isSupabaseConfigured } from './supabaseClient.js';
 
 export const TEAM_MEMBERS = Object.freeze(['Dan', 'Robi', 'Menza', 'Obora']);
 
 export const COACH_STORAGE_KEY = '4crazz-coach-network-v1';
 export const LEGACY_COACH_STORAGE_KEY = 'northstar-coach-network-v1';
+export const CAREER_COACHES_TABLE = 'career_coaches';
 
 const API_BASE = String(import.meta.env?.VITE_API_BASE_URL ?? '').trim().replace(/\/+$/, '');
 export const isCoachApiRemote = API_BASE.length > 0;
@@ -26,6 +31,7 @@ export const coachApiRoutes = {
   list: `${API_BASE}/api/coaches`,
   create: `${API_BASE}/api/coaches`,
   update: (id) => `${API_BASE}/api/coaches/${encodeURIComponent(id)}`,
+  remove: (id) => `${API_BASE}/api/coaches/${encodeURIComponent(id)}`,
 };
 
 /** Return the team member name when it is one of the allowed values, else ''. */
@@ -118,6 +124,39 @@ async function remoteRequest(url, options = {}) {
 }
 
 /* ------------------------------------------------------------------ */
+/* Supabase adapter — shared `career_coaches` table (cross-device sync) */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Upsert one coach row (insert or update by id) and return the saved row.
+ * `upsert` keeps sync idempotent: re-pushing a device-local record that
+ * already exists remotely updates it instead of erroring.
+ */
+export async function supabaseUpsertCoach(coach, client = supabase) {
+  const row = {
+    ...toCoachApiPayload(coach),
+    updated_at: new Date().toISOString(),
+  };
+  const { data, error } = await client
+    .from(CAREER_COACHES_TABLE)
+    .upsert(row)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+/** Fetch every coach row from Supabase, newest first. */
+export async function supabaseListCoaches(client = supabase) {
+  const { data, error } = await client
+    .from(CAREER_COACHES_TABLE)
+    .select('*')
+    .order('created_at', { ascending: false });
+  if (error) throw error;
+  return Array.isArray(data) ? data : [];
+}
+
+/* ------------------------------------------------------------------ */
 /* Local storage adapter (same contract as /api/coaches)               */
 /* ------------------------------------------------------------------ */
 
@@ -154,11 +193,12 @@ export function writeStoredCoaches(coaches) {
 /* ------------------------------------------------------------------ */
 
 /**
- * POST /api/coaches — create a coach and return the saved record
- * (including `added_by`). Falls back to the local adapter when no backend
- * is configured or the request fails.
+ * Create a coach and return the saved record (including `added_by`).
+ * Persists to the shared backend (Supabase `career_coaches` upsert) and
+ * falls back to the local adapter when no backend is configured or the
+ * request fails, so the app keeps working per-device offline.
  */
-export async function createCoach(coach) {
+export async function createCoach(coach, client = supabase) {
   const payload = toCoachApiPayload(coach);
   if (isCoachApiRemote) {
     try {
@@ -168,6 +208,13 @@ export async function createCoach(coach) {
       console.warn('[Coach API] POST /api/coaches failed; saving locally instead.', error);
     }
   }
+  if (isSupabaseConfigured) {
+    try {
+      return fromCoachApiRecord(await supabaseUpsertCoach(coach, client));
+    } catch (error) {
+      console.warn('[Coach API] Supabase create failed; saving locally instead.', error);
+    }
+  }
   const rows = readLocalRows().filter((row) => String(row?.id) !== payload.id);
   rows.unshift(payload);
   writeLocalRows(rows);
@@ -175,11 +222,10 @@ export async function createCoach(coach) {
 }
 
 /**
- * PUT /api/coaches/:id — update a coach and return the saved record
- * (including `added_by`). Falls back to the local adapter when no backend
- * is configured or the request fails.
+ * Update a coach and return the saved record (including `added_by`).
+ * Same backend priority and offline fallback as createCoach.
  */
-export async function updateCoach(coach) {
+export async function updateCoach(coach, client = supabase) {
   const payload = toCoachApiPayload(coach);
   if (isCoachApiRemote) {
     try {
@@ -187,6 +233,13 @@ export async function updateCoach(coach) {
       return fromCoachApiRecord(row ?? payload);
     } catch (error) {
       console.warn('[Coach API] PUT /api/coaches/:id failed; saving locally instead.', error);
+    }
+  }
+  if (isSupabaseConfigured) {
+    try {
+      return fromCoachApiRecord(await supabaseUpsertCoach(coach, client));
+    } catch (error) {
+      console.warn('[Coach API] Supabase update failed; saving locally instead.', error);
     }
   }
   const rows = readLocalRows();
@@ -198,12 +251,52 @@ export async function updateCoach(coach) {
 }
 
 /**
- * GET /api/coaches — fetch all coaches (including `added_by`) as coach state.
+ * Fetch all coaches (including `added_by`) as coach state.
+ * Throws when a configured remote backend fails, so callers can keep
+ * device-local data instead of silently overwriting it.
  */
-export async function fetchCoaches() {
+export async function fetchCoaches(client = supabase) {
   if (isCoachApiRemote) {
     const rows = await remoteRequest(coachApiRoutes.list, { method: 'GET' });
     return (Array.isArray(rows) ? rows : []).map(fromCoachApiRecord);
   }
+  if (isSupabaseConfigured) {
+    const rows = await supabaseListCoaches(client);
+    return rows.map(fromCoachApiRecord);
+  }
   return readStoredCoaches();
+}
+
+/**
+ * Delete a coach from the shared backend and the local cache. Propagating
+ * deletes keeps a removed coach from being resurrected by the next sync.
+ */
+export async function deleteCoach(id, client = supabase) {
+  const coachId = String(id ?? '');
+  if (isCoachApiRemote) {
+    try {
+      await remoteRequest(coachApiRoutes.remove(coachId), { method: 'DELETE' });
+    } catch (error) {
+      console.warn('[Coach API] DELETE /api/coaches/:id failed; removing locally instead.', error);
+    }
+  }
+  if (isSupabaseConfigured) {
+    try {
+      const { error } = await client.from(CAREER_COACHES_TABLE).delete().eq('id', coachId);
+      if (error) throw error;
+    } catch (error) {
+      console.warn('[Coach API] Supabase delete failed; removing locally instead.', error);
+    }
+  }
+  const rows = readLocalRows().filter((row) => String(row?.id) !== coachId);
+  writeLocalRows(rows);
+}
+
+/**
+ * Compute which device-local coaches the shared backend has never seen.
+ * Used by the sync step to push them up without duplicating remote rows.
+ */
+export function coachesMissingFromRemote(remoteCoaches = [], localCoaches = []) {
+  const remoteIds = new Set(remoteCoaches.map((coach) => String(coach.id)));
+  return localCoaches.filter((coach) => !remoteIds.has(String(coach.id)));
 }
