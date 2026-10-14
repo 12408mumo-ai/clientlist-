@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" role="img" aria-labelledby="ccm-title ccm-desc">
+  <title id="ccm-title">Career Calls emblem</title>
+  <desc id="ccm-desc">Career Calls ring emblem with serif C monogram</desc>
+  <defs>
+    <radialGradient id="ccm-bg" cx="50%" cy="42%" r="78%">
+      <stop offset="0%" stop-color="#333130"/>
+      <stop offset="100%" stop-color="#211F1D"/>
+    </radialGradient>
+    <linearGradient id="ccm-gold" x1="0" y1="0" x2="0.25" y2="1">
+      <stop offset="0%" stop-color="#E7CFAB"/>
+      <stop offset="55%" stop-color="#C9A97E"/>
+      <stop offset="100%" stop-color="#A8895E"/>
+    </linearGradient>
+    <linearGradient id="ccm-gold-text" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E4CBA4"/>
+      <stop offset="100%" stop-color="#BE9D71"/>
+    </linearGradient>
+    <linearGradient id="ccm-graphite" x1="0.1" y1="0" x2="0.9" y2="1">
+      <stop offset="0%" stop-color="#5C5956"/>
+      <stop offset="100%" stop-color="#403E3C"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="640" fill="url(#ccm-bg)"/>
+  <!-- Ring: graphite arc behind, champagne arc in front -->
+  <g fill="none" stroke-linecap="round">
+    <path d="M335 146 A175 175 0 1 1 290 492" stroke="url(#ccm-graphite)" stroke-width="52"/>
+    <path d="M290 148 A175 175 0 1 0 335 494" stroke="url(#ccm-gold)" stroke-width="52"/>
+  </g>
+  <!-- Serif C monogram with inner crescent -->
+  <text x="320" y="452" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="396" fill="url(#ccm-gold-text)">C</text>
+  <path d="M236 214 A98 98 0 0 0 236 410" fill="none" stroke="url(#ccm-gold-text)" stroke-width="12" stroke-linecap="round"/>
+</svg>

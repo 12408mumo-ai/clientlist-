@@ -1,5 +1,5 @@
 /**
- * 4CRAZZ Coach API — data layer for career-coach records.
+ * Career Calls Coach API — data layer for career-coach records.
  *
  * Database / REST schema (snake_case) always includes `added_by`: the team
  * member who added the coach. Allowed values are listed in TEAM_MEMBERS.

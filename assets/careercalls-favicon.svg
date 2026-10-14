@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" role="img" aria-labelledby="ccf-title ccf-desc">
+  <title id="ccf-title">Career Calls</title>
+  <desc id="ccf-desc">Circular Career Calls favicon — ring emblem with serif C</desc>
+  <defs>
+    <clipPath id="ccf-circle">
+      <circle cx="320" cy="320" r="320"/>
+    </clipPath>
+    <radialGradient id="ccf-bg" cx="50%" cy="42%" r="78%">
+      <stop offset="0%" stop-color="#2E2C2A"/>
+      <stop offset="100%" stop-color="#1D1B19"/>
+    </radialGradient>
+    <linearGradient id="ccf-gold" x1="0" y1="0" x2="0.25" y2="1">
+      <stop offset="0%" stop-color="#E7CFAB"/>
+      <stop offset="55%" stop-color="#C9A97E"/>
+      <stop offset="100%" stop-color="#A8895E"/>
+    </linearGradient>
+    <linearGradient id="ccf-gold-text" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E4CBA4"/>
+      <stop offset="100%" stop-color="#BE9D71"/>
+    </linearGradient>
+    <linearGradient id="ccf-graphite" x1="0.1" y1="0" x2="0.9" y2="1">
+      <stop offset="0%" stop-color="#5C5956"/>
+      <stop offset="100%" stop-color="#403E3C"/>
+    </linearGradient>
+  </defs>
+  <g clip-path="url(#ccf-circle)">
+    <rect width="640" height="640" fill="url(#ccf-bg)"/>
+    <!-- Ring: graphite arc behind, champagne arc in front -->
+    <g fill="none" stroke-linecap="round">
+      <path d="M333 158 A164 164 0 1 1 292 480" stroke="url(#ccf-graphite)" stroke-width="50"/>
+      <path d="M292 160 A164 164 0 1 0 333 482" stroke="url(#ccf-gold)" stroke-width="50"/>
+    </g>
+    <!-- Serif C monogram with inner crescent -->
+    <text x="320" y="438" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="372" fill="url(#ccf-gold-text)">C</text>
+    <path d="M242 226 A92 92 0 0 0 242 406" fill="none" stroke="url(#ccf-gold-text)" stroke-width="11" stroke-linecap="round"/>
+  </g>
+  <circle cx="320" cy="320" r="312" fill="none" stroke="#C9A97E" stroke-width="8"/>
+</svg>

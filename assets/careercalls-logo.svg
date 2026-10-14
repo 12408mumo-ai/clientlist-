@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" role="img" aria-labelledby="cc-title cc-desc">
+  <title id="cc-title">Career Calls</title>
+  <desc id="cc-desc">Career Calls brand lockup — two-tone ring emblem with serif C above the Career Calls wordmark</desc>
+  <defs>
+    <radialGradient id="cc-bg" cx="50%" cy="42%" r="78%">
+      <stop offset="0%" stop-color="#333130"/>
+      <stop offset="100%" stop-color="#211F1D"/>
+    </radialGradient>
+    <linearGradient id="cc-gold" x1="0" y1="0" x2="0.25" y2="1">
+      <stop offset="0%" stop-color="#E7CFAB"/>
+      <stop offset="55%" stop-color="#C9A97E"/>
+      <stop offset="100%" stop-color="#A8895E"/>
+    </linearGradient>
+    <linearGradient id="cc-gold-text" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E4CBA4"/>
+      <stop offset="100%" stop-color="#BE9D71"/>
+    </linearGradient>
+    <linearGradient id="cc-graphite" x1="0.1" y1="0" x2="0.9" y2="1">
+      <stop offset="0%" stop-color="#5C5956"/>
+      <stop offset="100%" stop-color="#403E3C"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="640" fill="url(#cc-bg)"/>
+  <!-- Ring: graphite arc behind, champagne arc in front -->
+  <g fill="none" stroke-linecap="round">
+    <path d="M331 108 A132 132 0 1 1 297 370" stroke="url(#cc-graphite)" stroke-width="40"/>
+    <path d="M297 110 A132 132 0 1 0 331 371" stroke="url(#cc-gold)" stroke-width="40"/>
+  </g>
+  <!-- Serif C monogram with inner crescent -->
+  <text x="320" y="342" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="296" fill="url(#cc-gold-text)">C</text>
+  <path d="M256 186 A72 72 0 0 0 256 306" fill="none" stroke="url(#cc-gold-text)" stroke-width="9" stroke-linecap="round"/>
+  <!-- Wordmark -->
+  <text x="320" y="492" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="56" letter-spacing="7" fill="url(#cc-gold-text)">CAREER CALLS</text>
+  <text x="320" y="538" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="17" letter-spacing="7.5" fill="#8E8A85">CAREERCALLS.CC</text>
+  <line x1="256" y1="566" x2="384" y2="566" stroke="#8E8A85" stroke-width="1.5"/>
+</svg>

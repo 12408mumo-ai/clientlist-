@@ -14,12 +14,12 @@ import {
 } from './coachApi.js';
 
   const avatarPalettes = {
-    gold: { bg: 'linear-gradient(145deg, #e8c873 0%, #b28632 100%)', ink: '#241805' },
-    bronze: { bg: 'linear-gradient(145deg, #c99a4c 0%, #815a24 100%)', ink: '#1d1306' },
-    champagne: { bg: 'linear-gradient(145deg, #f0dca3 0%, #c6a35a 100%)', ink: '#38280d' },
-    copper: { bg: 'linear-gradient(145deg, #d0a15d 0%, #895b2d 100%)', ink: '#261809' },
-    dark: { bg: 'linear-gradient(145deg, #201a0e 0%, #080706 100%)', ink: '#e5bc63' },
-    ivory: { bg: 'linear-gradient(145deg, #f0e1bc 0%, #b48f49 100%)', ink: '#30230d' },
+    gold: { bg: 'linear-gradient(145deg, #E2C79E 0%, #A8895E 100%)', ink: '#2A2012' },
+    bronze: { bg: 'linear-gradient(145deg, #C9A97E 0%, #7E6544 100%)', ink: '#2A2012' },
+    champagne: { bg: 'linear-gradient(145deg, #EDD9B4 0%, #C9A97E 100%)', ink: '#3A2E1C' },
+    copper: { bg: 'linear-gradient(145deg, #D4B489 0%, #8E7048 100%)', ink: '#2A2012' },
+    dark: { bg: 'linear-gradient(145deg, #353331 0%, #1A1917 100%)', ink: '#E2C79E' },
+    ivory: { bg: 'linear-gradient(145deg, #F2E8D5 0%, #C9A97E 100%)', ink: '#3A2E1C' },
   };
 
   const seedCoaches = [
@@ -27,7 +27,7 @@ import {
       id: 'coach-amara-okafor', fullName: 'Amara Okafor', title: 'Executive & Leadership Coach',
       bio: 'Helping thoughtful leaders build the confidence, clarity, and teams to do their best work.',
       avatarUrl: '', avatarColor: 'champagne', location: 'San Francisco, CA', remote: true,
-      email: 'amara@4crazz.com', yearsExperience: 14,
+      email: 'amara@careercalls.cc', yearsExperience: 14,
       skills: ['Executive coaching', 'Leadership', 'Team building', 'Founder transitions'], status: 'new', added_by: 'Dan',
       linkedin: 'https://www.linkedin.com/', twitter: 'https://x.com/', instagram: '', youtube: '', website: 'https://example.com/'
     },
@@ -35,7 +35,7 @@ import {
       id: 'coach-daniel-kim', fullName: 'Daniel Kim', title: 'Career Transition Coach',
       bio: 'A steady thought partner for people navigating a big professional pivot or a new chapter.',
       avatarUrl: '', avatarColor: 'gold', location: 'New York, NY', remote: false,
-      email: 'daniel@4crazz.com', yearsExperience: 11,
+      email: 'daniel@careercalls.cc', yearsExperience: 11,
       skills: ['Career pivots', 'Interview prep', 'Personal brand', 'Negotiation'], status: 'video-sent', added_by: 'Robi',
       linkedin: 'https://www.linkedin.com/', twitter: '', instagram: '', youtube: 'https://www.youtube.com/', website: ''
     },
@@ -43,7 +43,7 @@ import {
       id: 'coach-priya-nair', fullName: 'Priya Nair', title: 'Startup Operations Advisor',
       bio: 'Turns early-stage growing pains into people-first systems that give founders room to scale.',
       avatarUrl: '', avatarColor: 'gold', location: '', remote: true,
-      email: 'priya@4crazz.com', yearsExperience: 9,
+      email: 'priya@careercalls.cc', yearsExperience: 9,
       skills: ['Startup operations', 'People strategy', 'Scaling teams', 'Org design'], status: 'new', added_by: 'Menza',
       linkedin: 'https://www.linkedin.com/', twitter: 'https://x.com/', instagram: 'https://www.instagram.com/', youtube: '', website: 'https://example.com/'
     },
@@ -51,7 +51,7 @@ import {
       id: 'coach-james-rivera', fullName: 'James Rivera', title: 'Product & Design Career Coach',
       bio: 'Brings a designer’s curiosity to career planning, portfolio storytelling, and leadership growth.',
       avatarUrl: '', avatarColor: 'copper', location: 'Austin, TX', remote: true,
-      email: 'james@4crazz.com', yearsExperience: 12,
+      email: 'james@careercalls.cc', yearsExperience: 12,
       skills: ['Product leadership', 'Design careers', 'Portfolio reviews', 'Creative direction'], status: 'video-sent', added_by: 'Obora',
       linkedin: 'https://www.linkedin.com/', twitter: '', instagram: 'https://www.instagram.com/', youtube: '', website: 'https://example.com/'
     },
@@ -59,7 +59,7 @@ import {
       id: 'coach-sofia-laurent', fullName: 'Sofia Laurent', title: 'Leadership & Wellbeing Coach',
       bio: 'Supports ambitious leaders in finding a sustainable rhythm without losing sight of what matters.',
       avatarUrl: '', avatarColor: 'ivory', location: 'London, UK', remote: true,
-      email: 'sofia@4crazz.com', yearsExperience: 16,
+      email: 'sofia@careercalls.cc', yearsExperience: 16,
       skills: ['Leadership wellbeing', 'Burnout prevention', 'Mindful leadership', 'Team coaching'], status: 'new', added_by: 'Dan',
       linkedin: 'https://www.linkedin.com/', twitter: '', instagram: '', youtube: 'https://www.youtube.com/', website: ''
     },
@@ -67,7 +67,7 @@ import {
       id: 'coach-marcus-johnson', fullName: 'Marcus Johnson', title: 'Engineering Leadership Coach',
       bio: 'A former engineering leader helping technical teams grow with trust, focus, and clear communication.',
       avatarUrl: '', avatarColor: 'dark', location: '', remote: true,
-      email: 'marcus@4crazz.com', yearsExperience: 18,
+      email: 'marcus@careercalls.cc', yearsExperience: 18,
       skills: ['Engineering leadership', 'Technical management', 'Communication', 'Org design'], status: 'video-sent', added_by: 'Robi',
       linkedin: 'https://www.linkedin.com/', twitter: 'https://x.com/', instagram: '', youtube: '', website: 'https://example.com/'
     },
@@ -75,7 +75,7 @@ import {
       id: 'coach-elise-chen', fullName: 'Elise Chen', title: 'Career Clarity Coach',
       bio: 'Creates space to connect your strengths and values with work that feels meaningful and yours.',
       avatarUrl: '', avatarColor: 'champagne', location: 'Seattle, WA', remote: false,
-      email: 'elise@4crazz.com', yearsExperience: 8,
+      email: 'elise@careercalls.cc', yearsExperience: 8,
       skills: ['Career clarity', 'Values mapping', 'Leadership presence', 'Career pivots'], status: 'new', added_by: 'Menza',
       linkedin: 'https://www.linkedin.com/', twitter: '', instagram: 'https://www.instagram.com/', youtube: '', website: 'https://example.com/'
     },
@@ -83,7 +83,7 @@ import {
       id: 'coach-theo-martin', fullName: 'Theo Martin', title: 'Go-to-Market & Sales Coach',
       bio: 'Helps founders and sales leaders find a clear story, build momentum, and lead with purpose.',
       avatarUrl: '', avatarColor: 'gold', location: 'Toronto, Canada', remote: true,
-      email: 'theo@4crazz.com', yearsExperience: 13,
+      email: 'theo@careercalls.cc', yearsExperience: 13,
       skills: ['Go-to-market', 'Sales leadership', 'Founder coaching', 'Storytelling'], status: 'video-sent', added_by: 'Obora',
       linkedin: 'https://www.linkedin.com/', twitter: 'https://x.com/', instagram: '', youtube: 'https://www.youtube.com/', website: ''
     },
@@ -424,7 +424,7 @@ import {
     populateSkillChips();
     selectedAvatarColor = coach ? (Object.hasOwn(avatarPalettes, coach.avatarColor) ? coach.avatarColor : 'gold') : 'gold';
 
-    $('#modal-eyebrow').textContent = coach ? 'UPDATE 4CRAZZ PROFILE' : '4CRAZZ NETWORK';
+    $('#modal-eyebrow').textContent = coach ? 'UPDATE CAREER CALLS PROFILE' : 'CAREER CALLS NETWORK';
     $('#modal-title').textContent = coach ? 'Edit career coach' : 'Add a career coach';
     $('#modal-description').textContent = coach ? 'Keep their details current for a thoughtful introduction.' : 'Capture the details that make a great introduction.';
     $('#save-button-label').textContent = coach ? 'Save changes' : 'Save coach';
@@ -727,7 +727,7 @@ import {
       } else if (data?.session) {
         loginError.hidden = true;
         setAuthenticated(true, data.session);
-        showToast('Welcome back to 4CRAZZ.');
+        showToast('Welcome back to Career Calls.');
       } else if (data?.user && !data?.session) {
         loginError.textContent = 'Please verify your email address before logging in.';
         loginError.hidden = false;
@@ -750,7 +750,7 @@ import {
       console.warn('Sign out error:', err);
     }
     setAuthenticated(false);
-    showToast('Signed out of 4CRAZZ.');
+    showToast('Signed out of Career Calls.');
   }
 
   function updateTodayDate() {
