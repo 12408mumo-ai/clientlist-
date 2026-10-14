@@ -3,13 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#0B0C10" />
-    <meta name="description" content="4CRAZZ Coach Management — a private founder workspace for your career coach network." />
-    <title>4CRAZZ — Coach Management</title>
-    <link rel="icon" type="image/svg+xml" href="assets/4crazz-favicon.svg" />
-    <link rel="icon" type="image/png" sizes="64x64" href="assets/4crazz-favicon-64.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="assets/4crazz-favicon-32.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="assets/4crazz-apple-touch-180.png" />
+    <meta name="theme-color" content="#232221" />
+    <meta name="description" content="Career Calls Coach Management — a private founder workspace for your career coach network." />
+    <title>Career Calls — Coach Management</title>
+    <link rel="icon" type="image/svg+xml" href="assets/careercalls-favicon.svg" />
+    <link rel="icon" type="image/png" sizes="64x64" href="assets/careercalls-favicon-64.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/careercalls-favicon-32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/careercalls-apple-touch-180.png" />
     <link rel="stylesheet" href="/styles.css" />
     <script type="module" src="/app.js"></script>
   </head>
@@ -19,7 +19,7 @@
       <div class="login-ambient ambient-two" aria-hidden="true"></div>
       <section class="login-card" aria-labelledby="login-title">
         <div class="login-logo-wrap">
-          <img class="login-logo" src="assets/4crazz-logo.svg" alt="4CRAZZ" />
+          <img class="login-logo" src="assets/careercalls-logo.svg" alt="Career Calls" />
         </div>
         <div class="login-brandline"><span class="gold-rule"></span> COACH MANAGEMENT <span class="gold-rule"></span></div>
         <div class="login-heading">
@@ -30,7 +30,7 @@
           <label class="field-label" for="login-email">Email address</label>
           <div class="login-input-wrap">
             <svg class="field-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.25" y="5.25" width="17.5" height="13.5" rx="2.5"/><path d="m4.5 7 7.5 5.5L19.5 7"/></svg>
-            <input id="login-email" name="email" type="email" autocomplete="username" placeholder="founder@4crazz.com" required />
+            <input id="login-email" name="email" type="email" autocomplete="username" placeholder="founder@careercalls.cc" required />
           </div>
           <div class="password-row"><label class="field-label" for="login-password">Password</label><span class="field-hint">Founder access</span></div>
           <div class="login-input-wrap">
@@ -48,11 +48,11 @@
 
     <div id="app-shell" class="app-shell" hidden>
       <aside class="sidebar" aria-label="Main navigation">
-        <a class="sidebar-logo-link" href="#overview" aria-label="4CRAZZ dashboard"><img class="sidebar-logo" src="assets/4crazz-logo.svg" alt="4CRAZZ" /></a>
+        <a class="sidebar-logo-link" href="#overview" aria-label="Career Calls dashboard"><img class="sidebar-logo" src="assets/careercalls-logo.svg" alt="Career Calls" /></a>
         <div class="sidebar-brandline"><span></span> COACH MANAGEMENT</div>
         <div class="workspace-switcher">
-          <img class="workspace-icon" src="assets/4crazz-logo.svg" alt="4CRAZZ" />
-          <span class="workspace-copy"><strong>4CRAZZ Founder</strong><small>Private workspace</small></span>
+          <img class="workspace-icon" src="assets/careercalls-logo-mark.svg" alt="Career Calls" />
+          <span class="workspace-copy"><strong>Career Calls</strong><small>Private workspace</small></span>
           <svg class="chevron-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 10 4 4 4-4"/></svg>
         </div>
         <div class="nav-caption">WORKSPACE</div>
@@ -73,7 +73,7 @@
       </aside>
 
       <main class="dashboard-main">
-        <header class="mobile-topbar"><a class="mobile-brand" href="#overview" aria-label="4CRAZZ dashboard"><img src="assets/4crazz-logo.svg" alt="4CRAZZ" /></a><span class="mobile-brand-caption">COACH MANAGEMENT</span><button id="mobile-logout" class="mobile-logout" type="button">Sign out <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 4H5.5A1.5 1.5 0 0 0 4 5.5v13A1.5 1.5 0 0 0 5.5 20H10m4-3 5-5-5-5m5 5H9"/></svg></button></header>
+        <header class="mobile-topbar"><a class="mobile-brand" href="#overview" aria-label="Career Calls dashboard"><img src="assets/careercalls-logo.svg" alt="Career Calls" /></a><span class="mobile-brand-caption">COACH MANAGEMENT</span><button id="mobile-logout" class="mobile-logout" type="button">Sign out <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 4H5.5A1.5 1.5 0 0 0 4 5.5v13A1.5 1.5 0 0 0 5.5 20H10m4-3 5-5-5-5m5 5H9"/></svg></button></header>
         <div class="dashboard-content">
           <div id="overview" class="page-topline"><div class="breadcrumbs"><span>Workspace</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3 5 5-5 5"/></svg><strong>Coach management</strong></div><div class="topline-right"><span class="saved-indicator"><span></span> Saved automatically</span><div class="topline-avatar" aria-label="Alex Morgan">AM</div></div></div>
           <section class="welcome-section" aria-labelledby="welcome-title">
@@ -92,7 +92,7 @@
             <div id="coach-grid" class="coach-grid" aria-live="polite"></div>
             <div id="empty-state" class="empty-state" hidden><span class="empty-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.25 4.25M8.5 10.8h4.6"/></svg></span><h3>No coaches found</h3><p>Try a different search or status filter.</p><button id="clear-filters" class="outline-button" type="button">Clear filters</button></div>
           </section>
-          <footer class="dashboard-footer"><span>Built for people with big plans.</span><span>4CRAZZ <b>·</b> Coach management</span></footer>
+          <footer class="dashboard-footer"><span>Built for people with big plans.</span><span>Career Calls <b>·</b> Coach management</span></footer>
         </div>
       </main>
     </div>

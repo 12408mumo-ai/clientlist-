@@ -1,4 +1,4 @@
-# 4CRAZZ Coach Management
+# Career Calls — Coach Management
 
 A responsive founder workspace for managing a career-coach network with a split theme: a luxury black-and-gold navigation rail and login, paired with a warm cream dashboard workspace accented in metallic gold. Built with HTML, CSS, JavaScript, Vite, and Supabase Authentication.
 
